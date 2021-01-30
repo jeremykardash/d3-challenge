@@ -23,19 +23,19 @@ var chartGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 var chosenXAxis = "poverty";
-var chosenYAxis = "smokes";
+var chosenYAxis = "healthcare";
 
 //Import the data from 'data.csv' file
 d3.csv('assets/data/data.csv').then(function(data) {
     //console.log(data)
 
     data.forEach(function(data){
-        data.poverty    = +data.poverty;
+        data.poverty = +data.poverty;
         data.healthcare = +data.healthcare;
-        data.age        = +data.age;
-        data.smokes     = +data.smokes;
-        data.obesity    = +data.obesity;
-        data.income     = +data.income;
+        data.age = +data.age;
+        data.smokes = +data.smokes;
+        data.obesity = +data.obesity;
+        data.income = +data.income;
     })
 
     //Call scale functions
@@ -59,9 +59,9 @@ d3.csv('assets/data/data.csv').then(function(data) {
         .call(leftAxis);
     
     // append initial circles
-    var circlesGroup = chartGroup.selectAll("circle")
-        .data(data)
-        .enter()
+    var circlesGroup = chartGroup.selectAll("circle").data(data).enter()
+
+    circlesGroup
         .append("circle")
         .attr("cx", d => xLinearScale(d[chosenXAxis]))
         .attr("cy", d => yLinearScale(d[chosenYAxis]))
@@ -69,7 +69,7 @@ d3.csv('assets/data/data.csv').then(function(data) {
         .classed("stateCircle", true);
     
     //append initial circles text   
-    var circlesText = circlesGroup.append('text')
+    circlesGroup.append('text')
         .text(d => d.abbr)
         .attr("dx", d => xLinearScale(d[chosenXAxis]))
         .attr("dy", d => yLinearScale(d[chosenYAxis]) + 5)
@@ -129,7 +129,9 @@ d3.csv('assets/data/data.csv').then(function(data) {
         .attr("value", "obesity") // value to grab for event listener
         .text("Obese (%)")
         .classed("inactive", true); 
-
+  
+  var circlesGroup = updateToolTip(circlesGroup, chosenXAxis, chosenYAxis);
+  
   xlabelsGroup.selectAll("text")
     .on("click", function() {
       // get value of selection
@@ -143,7 +145,7 @@ d3.csv('assets/data/data.csv').then(function(data) {
 
         // functions here found above csv import
         // updates x scale for new data
-        xLinearScale = xScale(data, chosenXAxis);
+        xLinearScale = xScale(data, value);
 
         // updates x axis with transition
         xAxis = renderXAxes(xLinearScale, xAxis);

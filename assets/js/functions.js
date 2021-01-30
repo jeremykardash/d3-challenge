@@ -41,30 +41,30 @@ function renderYAxes(newYScale, yAxis) {
 };
 
 //function to chance the X values on the circles
-function renderXcircles(circleGroup, newXScale, chosenXAxis) {
-    circleGroup.transition()
+function renderXcircles(circlesGroup, newXScale, chosenXAxis) {
+    circlesGroup.transition()
         .duration(1000)
         .attr("cx", d => newXScale(d[chosenXAxis]))
     
-    return circleGroup
+    return circlesGroup
 };
 
 //function to change the Y values on the circles
-function renderYcircles(circleGroup, newYScale, chosenYAxis) {
-    circleGroup.transition()
+function renderYcircles(circlesGroup, newYScale, chosenYAxis) {
+    circlesGroup.transition()
         .duration(1000)
         .attr("cy", d => newYScale(d[chosenYAxis]))
     
-    return circleGroup
+    return circlesGroup
 };
 
 //function to move the text when X values are changed
-function renderXtext(circleGroup, newXScale, chosenXAxis) {
-    circleGroup.transition()
+function renderXtext(circlesGroup, newXScale, chosenXAxis) {
+    circlesGroup.transition()
         .duration(1000)
         .attr("dy", d => newXScale(d[chosenXAxis]))
     
-    return circleGroup
+    return circlesGroup
 };
 
 //function to move the text when Y values are changed
@@ -80,7 +80,7 @@ function renderYtext(circleGroup, newYScale, chosenYAxis) {
 //function to update the tooltip
 function updateToolTip(circlesGroup, chosenXAxis, chosenYAxis) {
 
-    var xlabel = "";
+    var xlabel;
     if (chosenXAxis === "poverty") {
       xlabel = "Poverty";
     } else if (chosenXAxis === "age"){
@@ -89,7 +89,7 @@ function updateToolTip(circlesGroup, chosenXAxis, chosenYAxis) {
       xlabel = "Income";
     }
   
-    var ylabel = "";
+    var ylabel;
     if (chosenYAxis === "healthcare") {
       ylabel = "Healthcare";
     } else if (chosenYAxis === "smokes"){
@@ -103,6 +103,18 @@ function updateToolTip(circlesGroup, chosenXAxis, chosenYAxis) {
       .offset([50, -75])
       .html(function(d) {
        
-          return (`${d.state}<br>${xlabel}: ${d[chosenXAxis]}${xpercentsign}<br>${ylabel}: ${d[chosenYAxis]}${ypercentsign}`)
+          return (`${d.state}<br>${xlabel}: ${d[chosenXAxis]}<br>${ylabel}: ${d[chosenYAxis]}`)
         });
-      ;}
+    
+    circlesGroup.call(toolTip);
+
+      circlesGroup.on("mouseover", function(data) {
+          toolTip.show(data);
+        })
+          // onmouseout event
+      .on("mouseout", function(data, index) {
+            toolTip.hide(data);
+          });
+      
+        return circlesGroup;
+      };
